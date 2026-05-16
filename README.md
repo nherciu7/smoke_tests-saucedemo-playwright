@@ -133,6 +133,8 @@ BASE_URL=https://your-env.example.com npm test
 │   ├── users.json               # Login credentials (valid & invalid)
 │   ├── products.json            # Product IDs and display names
 │   └── checkout.json            # Checkout form data (name, postal code)
+├── fixtures/
+│   └── index.ts                 # Custom Playwright fixtures (page objects injected per test)
 ├── pages/
 │   ├── LoginPage.ts             # Login page object
 │   ├── InventoryPage.ts         # Product listing page object
@@ -192,6 +194,21 @@ The pipeline is defined in [`.github/workflows/playwright.yml`](.github/workflow
 2. Click on any workflow run
 3. Check the **Summary** tab for the quality gate result
 4. Scroll to **Artifacts** at the bottom to download the HTML report or failure screenshots
+
+---
+
+## Fixtures
+
+Custom Playwright fixtures are defined in `fixtures/index.ts` and extend the base `test` object.
+
+| Fixture         | What it provides                                                      |
+| --------------- | --------------------------------------------------------------------- |
+| `loginPage`     | Creates a `LoginPage` instance **and navigates to `/`** automatically |
+| `inventoryPage` | Creates an `InventoryPage` instance ready to use                      |
+| `cartPage`      | Creates a `CartPage` instance ready to use                            |
+| `checkoutPage`  | Creates a `CheckoutPage` instance ready to use                        |
+
+Tests import `test` and `expect` from `../fixtures` instead of `@playwright/test`. This removes all manual `new ...Page(page)` instantiation and the `beforeEach` navigation boilerplate from the spec file.
 
 ---
 
