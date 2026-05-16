@@ -126,6 +126,9 @@ BASE_URL=https://your-env.example.com npm test
 ## Project Structure
 
 ```
+├── .github/
+│   └── workflows/
+│       └── playwright.yml       # GitHub Actions CI/CD pipeline
 ├── data/
 │   ├── users.json               # Login credentials (valid & invalid)
 │   ├── products.json            # Product IDs and display names
@@ -157,6 +160,30 @@ BASE_URL=https://your-env.example.com npm test
 | 2   | **Login with invalid credentials** | Error message displayed, user stays on login page                                   |
 | 3   | **Add product to cart**            | Basket counter updates to 1, product appears in cart page                           |
 | 4   | **Complete checkout**              | Full order flow: add to cart → checkout → fill form → finish → confirmation message |
+
+---
+
+## CI/CD — GitHub Actions
+
+The pipeline is defined in [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) and runs automatically on every push or pull request to `main`/`master`.
+
+**What it does:**
+
+| Step                        | Details                                                                 |
+| --------------------------- | ----------------------------------------------------------------------- |
+| Checkout code               | `actions/checkout@v4`                                                   |
+| Set up Node.js 20           | `actions/setup-node@v4` with npm cache                                  |
+| `npm ci`                    | Clean install of all dependencies                                       |
+| Install Chromium            | `npx playwright install --with-deps chromium`                           |
+| Run tests                   | `npm test -- --project=chromium` (Chromium only for speed)              |
+| Upload HTML report          | Always — kept for **30 days** under the _playwright-report_ artifact    |
+| Upload screenshots & videos | Only on failure — kept for **7 days** under the _test-results_ artifact |
+
+**Where to find the results:**
+
+1. Go to `https://github.com/nherciu7/smoke_tests-saucedemo-playwright/actions`
+2. Click on any workflow run
+3. Scroll to **Artifacts** at the bottom to download the HTML report or failure screenshots
 
 ---
 
