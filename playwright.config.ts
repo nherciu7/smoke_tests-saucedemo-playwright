@@ -8,7 +8,12 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [["html", { outputFolder: "playwright-report", open: "never" }]],
+  reporter: process.env.CI
+    ? [
+        ["github"],
+        ["html", { outputFolder: "playwright-report", open: "never" }],
+      ]
+    : [["html", { outputFolder: "playwright-report", open: "never" }]],
   use: {
     baseURL: BASE_URL,
     screenshot: "only-on-failure",

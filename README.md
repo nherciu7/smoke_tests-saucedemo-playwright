@@ -165,25 +165,33 @@ BASE_URL=https://your-env.example.com npm test
 
 ## CI/CD — GitHub Actions
 
-The pipeline is defined in [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) and runs automatically on every push or pull request to `main`/`master`.
+The pipeline is defined in [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) and runs automatically on every push or pull request to `main`/`master`. It can also be triggered manually from the Actions tab.
 
 **What it does:**
 
-| Step                        | Details                                                                 |
-| --------------------------- | ----------------------------------------------------------------------- |
-| Checkout code               | `actions/checkout@v4`                                                   |
-| Set up Node.js 20           | `actions/setup-node@v4` with npm cache                                  |
-| `npm ci`                    | Clean install of all dependencies                                       |
-| Install Chromium            | `npx playwright install --with-deps chromium`                           |
-| Run tests                   | `npm test -- --project=chromium` (Chromium only for speed)              |
-| Upload HTML report          | Always — kept for **30 days** under the _playwright-report_ artifact    |
-| Upload screenshots & videos | Only on failure — kept for **7 days** under the _test-results_ artifact |
+| Step                        | Details                                                                                       |
+| --------------------------- | --------------------------------------------------------------------------------------------- |
+| Checkout code               | `actions/checkout@v4`                                                                         |
+| Set up Node.js 20           | `actions/setup-node@v4` with npm cache                                                        |
+| `npm ci`                    | Clean install of all dependencies                                                             |
+| Install Chromium            | `npx playwright install --with-deps chromium`                                                 |
+| Run tests                   | `npm test -- --project=chromium` (Chromium only for speed)                                    |
+| **Quality gate**            | Posts ✅ PASSED / ❌ FAILED summary; failed tests annotated inline on PRs via GitHub reporter |
+| Upload HTML report          | Always — kept for **30 days** under the _playwright-report_ artifact                          |
+| Upload screenshots & videos | Only on failure — kept for **7 days** under the _test-results_ artifact                       |
+
+**Quality gate behaviour:**
+
+- The build **fails** if any test fails — blocking merges when branch protection is enabled
+- Failed tests are annotated **inline on the PR diff** (GitHub reporter)
+- A pass/fail summary is written to the workflow run summary page
 
 **Where to find the results:**
 
 1. Go to `https://github.com/nherciu7/smoke_tests-saucedemo-playwright/actions`
 2. Click on any workflow run
-3. Scroll to **Artifacts** at the bottom to download the HTML report or failure screenshots
+3. Check the **Summary** tab for the quality gate result
+4. Scroll to **Artifacts** at the bottom to download the HTML report or failure screenshots
 
 ---
 

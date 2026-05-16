@@ -30,7 +30,19 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run tests
+        id: run-tests
         run: npm test -- --project=chromium
+
+      - name: Quality gate summary
+        if: always()
+        run: |
+          if [ "${{ steps.run-tests.outcome }}" == "success" ]; then
+            echo "## ✅ Quality Gate — PASSED" >> $GITHUB_STEP_SUMMARY
+            echo "All Playwright tests passed." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## ❌ Quality Gate — FAILED" >> $GITHUB_STEP_SUMMARY
+            echo "One or more Playwright tests failed. Download the artifacts below for screenshots, videos and the full HTML report." >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
