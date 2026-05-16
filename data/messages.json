@@ -1,0 +1,5 @@
+{
+  "invalidLoginError": "Epic sadface: Username and password do not match any user in this service",
+  "inventoryTitle": "Products",
+  "checkoutConfirmation": "Thank you for your order!"
+}

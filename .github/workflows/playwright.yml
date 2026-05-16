@@ -37,10 +37,10 @@ jobs:
         if: always()
         run: |
           if [ "${{ steps.run-tests.outcome }}" == "success" ]; then
-            echo "## ✅ Quality Gate — PASSED" >> $GITHUB_STEP_SUMMARY
+            echo "##  Quality Gate — PASSED" >> $GITHUB_STEP_SUMMARY
             echo "All Playwright tests passed." >> $GITHUB_STEP_SUMMARY
           else
-            echo "## ❌ Quality Gate — FAILED" >> $GITHUB_STEP_SUMMARY
+            echo "##  Quality Gate — FAILED" >> $GITHUB_STEP_SUMMARY
             echo "One or more Playwright tests failed. Download the artifacts below for screenshots, videos and the full HTML report." >> $GITHUB_STEP_SUMMARY
           fi
 

@@ -36,4 +36,8 @@ export class InventoryPage {
       return await basketCountLocator.textContent();
     }
   }
+
+  async goToCart() {
+    await this.page.locator(".shopping_cart_link").click();
+  }
 }

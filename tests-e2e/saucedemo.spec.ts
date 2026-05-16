@@ -2,15 +2,16 @@ import { test, expect } from "../fixtures";
 import users from "../data/users.json";
 import products from "../data/products.json";
 import checkout from "../data/checkout.json";
+import messages from "../data/messages.json";
 
 test.describe("SauceDemo Login Scenarios", () => {
-  // loginPage fixture automatically navigates to the login page before each test
-
   test("1.Login succesfully", async ({ loginPage, inventoryPage, page }) => {
     await loginPage.login(users.validUser.username, users.validUser.password);
 
     await expect(page).toHaveURL("/inventory.html");
-    await expect(inventoryPage.getTitle()).resolves.toBe("Products");
+    await expect(inventoryPage.getTitle()).resolves.toBe(
+      messages.inventoryTitle,
+    );
     await expect(inventoryPage.productItems).toBeVisible();
   });
 
@@ -21,9 +22,7 @@ test.describe("SauceDemo Login Scenarios", () => {
     );
 
     const errorMessage = await loginPage.getErrorMessage();
-    expect(errorMessage).toBe(
-      "Epic sadface: Username and password do not match any user in this service",
-    );
+    expect(errorMessage).toBe(messages.invalidLoginError);
   });
 
   test("3.Add product to cart and verify basket count", async ({
@@ -38,7 +37,7 @@ test.describe("SauceDemo Login Scenarios", () => {
     const basketCount = await inventoryPage.getBasketCount();
     expect(basketCount).toBe("1");
 
-    await page.locator(".shopping_cart_link").click();
+    await inventoryPage.goToCart();
     await expect(page).toHaveURL("/cart.html");
     await expect(cartPage.getItemByName(products.backpack.name)).toBeVisible();
   });
@@ -53,7 +52,7 @@ test.describe("SauceDemo Login Scenarios", () => {
     await loginPage.login(users.validUser.username, users.validUser.password);
 
     await inventoryPage.addProductToCart(products.backpack.id);
-    await page.locator(".shopping_cart_link").click();
+    await inventoryPage.goToCart();
 
     await cartPage.checkout();
 
@@ -66,6 +65,6 @@ test.describe("SauceDemo Login Scenarios", () => {
     await checkoutPage.finish();
 
     const confirmation = await checkoutPage.getConfirmationMessage();
-    expect(confirmation).toBe("Thank you for your order!");
+    expect(confirmation).toBe(messages.checkoutConfirmation);
   });
 });

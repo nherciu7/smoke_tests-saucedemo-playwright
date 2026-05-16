@@ -13,7 +13,7 @@ export class CartPage {
     this.checkoutButton = page.locator('[data-test="checkout"]');
   }
   async navigate() {
-    await this.page.goto("https://www.saucedemo.com/cart.html");
+    await this.page.goto("/cart.html");
   }
 
   async getTitle() {
