@@ -15,7 +15,7 @@ test.describe("SauceDemo Login Scenarios", () => {
     await expect(inventoryPage.productItems).toBeVisible();
   });
 
-  test("2.Login with invalid credentials", async ({ loginPage }) => {
+  test("2.Login with invalid credentials", async ({ loginPage, page }) => {
     await loginPage.login(
       users.invalidUser.username,
       users.invalidUser.password,
@@ -23,36 +23,31 @@ test.describe("SauceDemo Login Scenarios", () => {
 
     const errorMessage = await loginPage.getErrorMessage();
     expect(errorMessage).toBe(messages.invalidLoginError);
+    await expect(page).toHaveURL("/");
   });
 
   test("3.Add product to cart and verify basket count", async ({
-    loginPage,
-    inventoryPage,
+    authenticatedInventoryPage,
     cartPage,
     page,
   }) => {
-    await loginPage.login(users.validUser.username, users.validUser.password);
-
-    await inventoryPage.addProductToCart(products.backpack.id);
-    const basketCount = await inventoryPage.getBasketCount();
+    await authenticatedInventoryPage.addProductToCart(products.backpack.id);
+    const basketCount = await authenticatedInventoryPage.getBasketCount();
     expect(basketCount).toBe("1");
 
-    await inventoryPage.goToCart();
+    await authenticatedInventoryPage.goToCart();
     await expect(page).toHaveURL("/cart.html");
     await expect(cartPage.getItemByName(products.backpack.name)).toBeVisible();
   });
 
   test("4.Complete checkout", async ({
-    loginPage,
-    inventoryPage,
+    authenticatedInventoryPage,
     cartPage,
     checkoutPage,
     page,
   }) => {
-    await loginPage.login(users.validUser.username, users.validUser.password);
-
-    await inventoryPage.addProductToCart(products.backpack.id);
-    await inventoryPage.goToCart();
+    await authenticatedInventoryPage.addProductToCart(products.backpack.id);
+    await authenticatedInventoryPage.goToCart();
 
     await cartPage.checkout();
 

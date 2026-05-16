@@ -5,7 +5,7 @@
   },
 
   "invalidUser": {
-    "username": "locked_out_user",
-    "password": "wrong_password"
+    "username": "invalid_user",
+    "password": "invalid_pass"
   }
 }
